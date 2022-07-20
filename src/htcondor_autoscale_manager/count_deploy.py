@@ -22,7 +22,7 @@ def count_deploy(query, resource, pool=None):
 
     coll = htcondor.Collector(pool)
     pslots = coll.query(htcondor.AdTypes.Startd,
-        constraint="GLIDEIN_ResourceName=?=%s && PartitionableSlot && Offline =!= true" % \
+        constraint="%s && PartitionableSlot && Offline =!= true" % \
                    classad.quote(resource),
         projection=["TotalCPUs", "CPUs", "Name", "UtsnameNodename"])
 

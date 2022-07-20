@@ -24,9 +24,9 @@ g_metric = 1.0
 
 @scheduler.task("interval", id="metric_update", seconds=60)
 def metric_update():
-    resource = app.config.get("RESOURCE_NAME")
+    resource = app.config.get("RESOURCE_CONSTRAINT")
     if not resource:
-        print("RESOURCE_NAME not set - cannot compute metric.")
+        print("RESOURCE_CONSTRAINT not set - cannot compute metric.")
         return
     query = app.config.get("POD_LABEL_SELECTOR")
     if not query:

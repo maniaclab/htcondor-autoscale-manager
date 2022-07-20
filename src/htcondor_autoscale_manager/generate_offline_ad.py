@@ -9,7 +9,7 @@ def get_offline_ads(resource, pool=None):
     coll = htcondor.Collector(pool)
 
     pslots = list(coll.query(htcondor.AdTypes.Startd,
-               constraint="GLIDEIN_ResourceName=?=%s && PartitionableSlot && Offline" % classad.quote(resource)))
+               constraint="%s && PartitionableSlot && Offline" % classad.quote(resource)))
 
     if pslots:
         return pslots
@@ -19,7 +19,7 @@ def generate_offline_ad(resource, pool=None):
     coll = htcondor.Collector(pool)
 
     pslots = list(coll.query(htcondor.AdTypes.Startd,
-             constraint="GLIDEIN_ResourceName=?=%s && PartitionableSlot && Offline =!= true" % classad.quote(resource)))
+             constraint="%s && PartitionableSlot && Offline =!= true" % classad.quote(resource)))
 
     if not pslots:
        return False
