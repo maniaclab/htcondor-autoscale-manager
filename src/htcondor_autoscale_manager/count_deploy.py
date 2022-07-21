@@ -5,7 +5,7 @@ import json
 import classad
 import htcondor
 
-def count_deploy(query, resource, pool=None):
+def count_deploy(query, constraints, pool=None):
 
     count = subprocess.run(["/app/kubectl", "get", "pods", "-o", "json", "-l", query], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
     count.check_returncode()
@@ -23,7 +23,7 @@ def count_deploy(query, resource, pool=None):
     coll = htcondor.Collector(pool)
     pslots = coll.query(htcondor.AdTypes.Startd,
         constraint="%s && PartitionableSlot && Offline =!= true" % \
-                   classad.quote(resource),
+                   constraints,
         projection=["TotalCPUs", "CPUs", "Name", "UtsnameNodename"])
 
     online_pods = set()

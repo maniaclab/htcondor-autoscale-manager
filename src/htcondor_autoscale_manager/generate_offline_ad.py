@@ -5,21 +5,21 @@ import time
 import classad
 import htcondor
 
-def get_offline_ads(resource, pool=None):
+def get_offline_ads(constraints, pool=None):
     coll = htcondor.Collector(pool)
 
     pslots = list(coll.query(htcondor.AdTypes.Startd,
-               constraint="%s && PartitionableSlot && Offline" % classad.quote(resource)))
+               constraint="%s && PartitionableSlot && Offline" % constraints))
 
     if pslots:
         return pslots
 
 
-def generate_offline_ad(resource, pool=None):
+def generate_offline_ad(constraints, resource="autoscale", pool=None):
     coll = htcondor.Collector(pool)
 
     pslots = list(coll.query(htcondor.AdTypes.Startd,
-             constraint="%s && PartitionableSlot && Offline =!= true" % classad.quote(resource)))
+             constraint="%s && PartitionableSlot && Offline =!= true" % constraints))
 
     if not pslots:
        return False

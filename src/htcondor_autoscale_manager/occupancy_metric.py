@@ -6,14 +6,14 @@ import htcondor
 
 import time
 
-def occupancy_metric(query, resource, pool=None):
+def occupancy_metric(query, constraints, pool=None):
     now = time.time()
 
-    counts = count_deploy(query, resource, pool=pool)
+    counts = count_deploy(query, constraints, pool=pool)
 
     print(f"There are {counts['idle']} idle startds in the resource out of {counts['total']} total.")
 
-    ads = get_offline_ads(resource, pool=pool)
+    ads = get_offline_ads(constraints, pool=pool)
     good_ads = []
     if not ads:
         ads = []
@@ -21,7 +21,7 @@ def occupancy_metric(query, resource, pool=None):
         if (ad.get("LastHeardFrom", 0) + ad.get("ClassAdLifetime") >= now + 20*60):
             good_ads.append(ad)
     if not good_ads:
-        ad = generate_offline_ad(resource, pool=pool)
+        ad = generate_offline_ad(constraints, pool=pool)
         if ad:
             coll = htcondor.Collector(pool)
             coll.advertise([ad], command="UPDATE_STARTD_AD")

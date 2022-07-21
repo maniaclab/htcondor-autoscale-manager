@@ -24,8 +24,8 @@ g_metric = 1.0
 
 @scheduler.task("interval", id="metric_update", seconds=60)
 def metric_update():
-    resource = app.config.get("RESOURCE_CONSTRAINT")
-    if not resource:
+    constraints = app.config.get("RESOURCE_CONSTRAINT")
+    if not constraints:
         print("RESOURCE_CONSTRAINT not set - cannot compute metric.")
         return
     query = app.config.get("POD_LABEL_SELECTOR")
@@ -46,7 +46,7 @@ def metric_update():
                 sm.setToken(htcondor.Token(fp.read().strip()))
         try:
             global g_metric
-            g_metric, counts = htcondor_autoscale_manager.occupancy_metric(query, resource)
+            g_metric, counts = htcondor_autoscale_manager.occupancy_metric(query, constraints)
         except Exception as exc:
             print(f"Exception occurred during metric update: {exc}")
             return
