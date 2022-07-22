@@ -52,7 +52,8 @@ def generate_offline_ad(constraints, resource="autoscale", pool=None):
     target_ad["Cpus"] = target_ad["TotalSlotCpus"]
     target_ad["Memory"] = target_ad["TotalSlotMemory"]
     target_ad["Disk"] = target_ad["TotalSlotDisk"]
-    target_ad["GPUs"] = target_ad["TotalSlotGPUs"]
+    if target_ad.get("TotalSlotGPUs"):
+        target_ad["GPUs"] = target_ad["TotalSlotGPUs"]
     target_ad["RecentJobDurationCount"] = 0
 
     # Generate a nice-looking name
