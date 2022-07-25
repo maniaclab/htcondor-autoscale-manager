@@ -17,7 +17,7 @@ def count_deploy(query, constraints, pool=None):
     for pod in count['items']:
         name = pod['spec']['nodeName']  if pod['spec'].get('hostNetwork', False) else pod['metadata']['name']
         pods.add(name)
-        costs[name] = \
+        costs[pod['metadata']['name']] = \
             pod['metadata'].get('annotations', {}) \
             .get("controller.kubernetes.io/pod-deletion-cost")
 
