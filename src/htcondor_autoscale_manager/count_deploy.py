@@ -7,7 +7,8 @@ import htcondor
 
 def count_deploy(query, constraints, pool=None):
 
-    count = subprocess.run(["/app/kubectl", "get", "pods", "-o", "json", "-l", query], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    count = subprocess.run(["/app/kubectl", "get", "pods", "-o", "json", "-l", query,
+        "--field-selector", "status.phase==Running"], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
     count.check_returncode()
 
     count = json.loads(count.stdout)
