@@ -16,8 +16,7 @@ def count_deploy(query, constraints, pool=None):
     pods = set()
     costs = {}
     for pod in count['items']:
-        name = pod['spec']['nodeName']  if pod['spec'].get('hostNetwork', False) else pod['metadata']['name']
-        pods.add(name)
+        pods.add(pod['metadata']['name'])
         costs[pod['metadata']['name']] = \
             pod['metadata'].get('annotations', {}) \
             .get("controller.kubernetes.io/pod-deletion-cost")
@@ -32,11 +31,19 @@ def count_deploy(query, constraints, pool=None):
     idle_pods = set()
     for slot in pslots:
         name = slot.get("UtsnameNodename")
-        if not name:
+        # nodename to podname
+        # in case when the condor worker pod uses hostnetwork, the UtsnameNodename field is the hostname 
+        # translate the hostname to pod name
+        if name in pods:
+            podname = name
+        else:
+            podname = next((pod['metadata']['name'] for pod in count['items'] if pod['spec'].get('hostNetwork', False) == True and pod['spec']['nodeName'] == name), None)
+        if not podname:
             continue
-        online_pods.add(name)
+
+        online_pods.add(podname)
         if slot.get("CPUs") == slot.get("TotalCpus"):
-            idle_pods.add(name)
+            idle_pods.add(podname)
 
     return {"pods": pods,
             "idle_pods": idle_pods,
