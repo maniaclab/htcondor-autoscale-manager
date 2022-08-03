@@ -33,6 +33,9 @@ def metric_update():
         print("POD_LABEL_SELECTOR not set - cannot query kubernetes for pods.")
         return
 
+    scale_param = {'velocity': app.config.get("SCALE_VELOCITY", 1),
+                   'idlepods': app.config.get("IDLE_PODS", 0)}
+
     with htcondor.SecMan() as sm:
         if 'BEARER_TOKEN' in app.config:
             sm.setToken(htcondor.Token(app.config['BEARER_TOKEN']))
@@ -46,7 +49,7 @@ def metric_update():
                 sm.setToken(htcondor.Token(fp.read().strip()))
         try:
             global g_metric
-            g_metric, counts = htcondor_autoscale_manager.occupancy_metric(query, constraints)
+            g_metric, counts = htcondor_autoscale_manager.occupancy_metric(query, constraints, scale_param)
         except Exception as exc:
             print(f"Exception occurred during metric update: {exc}")
             return
