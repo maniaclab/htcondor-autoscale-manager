@@ -33,8 +33,8 @@ def metric_update():
         print("POD_LABEL_SELECTOR not set - cannot query kubernetes for pods.")
         return
 
-    scale_param = {'velocity': app.config.get("SCALE_VELOCITY", 1),
-                   'idlepods': app.config.get("IDLE_PODS", 0)}
+    scale_param = {'velocity': int(app.config.get("SCALE_VELOCITY", 1)),
+                   'idlepods': int(app.config.get("IDLE_PODS", 0))}
 
     with htcondor.SecMan() as sm:
         if 'BEARER_TOKEN' in app.config:
