@@ -39,9 +39,14 @@ def occupancy_metric(query, constraints, scale_param, pool=None):
 
     print(f"There were {useful_offline_ads} offline ads marked as useful.")
 
+    print(f"useful_offline_ads: {useful_offline_ads}, counts_idle: {counts['idle']}, offline: {len(counts['offline_pods'])}, total: {counts['total']}")
+
     slots_needed = useful_offline_ads * scale_param["velocity"] + scale_param["idlepods"] - counts['idle'] - len(counts['offline_pods'])
     target_slots = counts['total'] + slots_needed
-    metric = target_slots / counts['total']
+    #metric = target_slots / counts['total']
+    # just use the target_slots, combined with the target metric setting in hpa definition to decide the 
+    # desiredReplicas - seems the desiredReplicas is based on number of nodes(a constant) rather than currentReplicas.  
+    metric = target_slots
     print(f"Current occcupancy metric value: {metric}")
 
     return metric, counts
