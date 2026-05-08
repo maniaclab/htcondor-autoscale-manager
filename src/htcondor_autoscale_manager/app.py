@@ -6,6 +6,7 @@ import htcondor
 
 from flask import Flask
 from flask_apscheduler import APScheduler
+from flask import Response
 
 import htcondor_autoscale_manager.occupancy_metric
 import htcondor_autoscale_manager.patch_annotation
@@ -107,7 +108,7 @@ def metrics():
     line = ""
     for m in g_metrics:
         line += f"{m['name']} {m['value']}\n"
-    return line
+    return Response(line, mimetype="text/plain; version=0.0.4; charset=utf-8")
 
 def entry():
     app.run()
